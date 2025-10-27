@@ -236,6 +236,11 @@ def build_hls_playlist(mpd_dict: dict, profiles: list[dict], request: Request) -
         has_encrypted = query_params.pop("has_encrypted", False)
 
         for segment in segments:
+
+            # Add program date time for live streams
+            if "program_date_time" in segment:
+                hls.append(f'#EXT-X-PROGRAM-DATE-TIME:{segment["program_date_time"]}')
+            
             hls.append(f'#EXTINF:{segment["extinf"]:.3f},')
             query_params.update(
                 {"init_url": init_url, "segment_url": segment["media"], "mime_type": profile["mimeType"]}
